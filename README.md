@@ -1,2 +1,33 @@
 # Digital-Nursery
-Built a web site for the plant shopping using Python as backend and HTML , CSS , JS for  the frontend using a flask framework and MYSQL as database.  It will automatically suggests the plants for the specified areas based on the  temperature, climate, weather and humidity.
+#Built a web site for the plant shopping using Python as backend and HTML , CSS , JS for  the frontend using a flask framework and MYSQL as database.  It will automatically suggests the plants for the specified areas based on the  temperature, climate, weather and humidity.
+from flask import Flask, render_template, request, jsonify
+import pymysql
+
+app = Flask(__name__)
+
+# Database configuration
+db = pymysql.connect(host='your_db_host', user='your_db_user', password='your_db_password', database='your_db_name')
+cursor = db.cursor()
+
+@app.route('/')
+def index():
+    # Render your HTML template for the frontend
+    return render_template('index.html')
+
+@app.route('/suggest_plants', methods=['POST'])
+def suggest_plants():
+    # Retrieve data from the frontend (e.g., temperature, climate, weather, humidity)
+    data = request.get_json()
+
+    # Perform database queries to suggest plants based on the specified criteria
+    # Modify the SQL query according to your database schema and requirements
+    query = "SELECT plant_name FROM plants WHERE temperature <= %s AND climate = %s AND weather = %s AND humidity <= %s"
+    cursor.execute(query, (data['temperature'], data['climate'], data['weather'], data['humidity']))
+    result = cursor.fetchall()
+
+    # Return the suggested plants as JSON
+    return jsonify({'plants': result})
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
