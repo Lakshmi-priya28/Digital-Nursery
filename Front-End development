@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Shopping</title>
+</head>
+<body>
+    <h1>Plant Shopping</h1>
+    <!-- Your form to input temperature, climate, weather, humidity -->
+    <form id="plantForm">
+        <!-- Add input fields and submit button -->
+    </form>
+    <div id="suggestedPlants"></div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        // Implement AJAX to send data to the backend and update the suggested plants
+        // Example using jQuery
+        $('#plantForm').submit(function(event) {
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/suggest_plants',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({
+                    temperature: $('#temperatureInput').val(),
+                    climate: $('#climateInput').val(),
+                    weather: $('#weatherInput').val(),
+                    humidity: $('#humidityInput').val()
+                }),
+                success: function(response) {
+                    // Update the suggested plants on the frontend
+                    $('#suggestedPlants').html('<h2>Suggested Plants:</h2><ul>' + response.plants.map(plant => '<li>' + plant + '</li>').join('') + '</ul>');
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
